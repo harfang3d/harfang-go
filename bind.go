@@ -1,11 +1,12 @@
 package harfang
 
-// #cgo linux pkg-config: gtk+-3.0
+// #include "wrapper.h"
 // #cgo CFLAGS: -I . -Wall -Wno-unused-variable -Wno-unused-function -O3
-// #cgo CXXFLAGS: -std=c++17 -O3
+// #cgo CXXFLAGS: -std=c++14 -O3
+// #cgo linux pkg-config: gtk+-3.0
 // #cgo linux LDFLAGS: -L${SRCDIR}/linux -lhg_go -lharfang -lm -lstdc++ -Wl,--no-as-needed -ldl -lGL -lXrandr -lXext -lX11 -lglib-2.0
 // #cgo windows LDFLAGS: -L${SRCDIR}/windows -lhg_go -lharfang -lGdi32 -lDbghelp -lshell32 -loleaut32 -luuid -lcomdlg32 -lOle32 -lWinmm -lstdc++
-// #include "wrapper.h"
+// #cgo LDFLAGS: -lstdc++ -L. -lharfang
 import "C"
 
 import (
@@ -116,94 +117,6 @@ func (pointer *VoidPointer) Free() {
 // IsNil ...
 func (pointer *VoidPointer) IsNil() bool {
 	return pointer.h == C.WrapVoidPointer(nil)
-}
-
-// GoSliceOfint ...
-type GoSliceOfint []int32
-
-// IntList  ...
-type IntList struct {
-	h C.WrapIntList
-}
-
-// Get ...
-func (pointer *IntList) Get(id int) int32 {
-	v := C.WrapIntListGetOperator(pointer.h, C.int(id))
-	return int32(v)
-}
-
-// Set ...
-func (pointer *IntList) Set(id int, v int32) {
-	vToC := C.int32_t(v)
-	C.WrapIntListSetOperator(pointer.h, C.int(id), vToC)
-}
-
-// Len ...
-func (pointer *IntList) Len() int32 {
-	return int32(C.WrapIntListLenOperator(pointer.h))
-}
-
-// NewIntList ...
-func NewIntList() *IntList {
-	retval := C.WrapConstructorIntList()
-	retvalGO := &IntList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *IntList) {
-		C.WrapIntListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// NewIntListWithSequence ...
-func NewIntListWithSequence(sequence GoSliceOfint) *IntList {
-	sequenceToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequence))
-	sequenceToCSize := C.size_t(sequenceToC.Len)
-	sequenceToCBuf := (*C.int32_t)(unsafe.Pointer(sequenceToC.Data))
-	retval := C.WrapConstructorIntListWithSequence(sequenceToCSize, sequenceToCBuf)
-	retvalGO := &IntList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *IntList) {
-		C.WrapIntListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *IntList) Free() {
-	C.WrapIntListFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *IntList) IsNil() bool {
-	return pointer.h == C.WrapIntList(nil)
-}
-
-// Clear ...
-func (pointer *IntList) Clear() {
-	C.WrapClearIntList(pointer.h)
-}
-
-// Reserve ...
-func (pointer *IntList) Reserve(size int32) {
-	sizeToC := C.size_t(size)
-	C.WrapReserveIntList(pointer.h, sizeToC)
-}
-
-// PushBack ...
-func (pointer *IntList) PushBack(v int32) {
-	vToC := C.int32_t(v)
-	C.WrapPushBackIntList(pointer.h, vToC)
-}
-
-// Size ...
-func (pointer *IntList) Size() int32 {
-	retval := C.WrapSizeIntList(pointer.h)
-	return int32(retval)
-}
-
-// At ...
-func (pointer *IntList) At(idx int32) int32 {
-	idxToC := C.size_t(idx)
-	retval := C.WrapAtIntList(pointer.h, idxToC)
-	return int32(retval)
 }
 
 // GoSliceOfuint16T ...
@@ -380,94 +293,6 @@ func (pointer *Uint32TList) At(idx int32) uint32 {
 	idxToC := C.size_t(idx)
 	retval := C.WrapAtUint32TList(pointer.h, idxToC)
 	return uint32(retval)
-}
-
-// GoSliceOffloat ...
-type GoSliceOffloat []float32
-
-// FloatList  ...
-type FloatList struct {
-	h C.WrapFloatList
-}
-
-// Get ...
-func (pointer *FloatList) Get(id int) float32 {
-	v := C.WrapFloatListGetOperator(pointer.h, C.int(id))
-	return float32(v)
-}
-
-// Set ...
-func (pointer *FloatList) Set(id int, v float32) {
-	vToC := C.float(v)
-	C.WrapFloatListSetOperator(pointer.h, C.int(id), vToC)
-}
-
-// Len ...
-func (pointer *FloatList) Len() int32 {
-	return int32(C.WrapFloatListLenOperator(pointer.h))
-}
-
-// NewFloatList ...
-func NewFloatList() *FloatList {
-	retval := C.WrapConstructorFloatList()
-	retvalGO := &FloatList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *FloatList) {
-		C.WrapFloatListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// NewFloatListWithSequence ...
-func NewFloatListWithSequence(sequence GoSliceOffloat) *FloatList {
-	sequenceToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequence))
-	sequenceToCSize := C.size_t(sequenceToC.Len)
-	sequenceToCBuf := (*C.float)(unsafe.Pointer(sequenceToC.Data))
-	retval := C.WrapConstructorFloatListWithSequence(sequenceToCSize, sequenceToCBuf)
-	retvalGO := &FloatList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *FloatList) {
-		C.WrapFloatListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *FloatList) Free() {
-	C.WrapFloatListFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *FloatList) IsNil() bool {
-	return pointer.h == C.WrapFloatList(nil)
-}
-
-// Clear ...
-func (pointer *FloatList) Clear() {
-	C.WrapClearFloatList(pointer.h)
-}
-
-// Reserve ...
-func (pointer *FloatList) Reserve(size int32) {
-	sizeToC := C.size_t(size)
-	C.WrapReserveFloatList(pointer.h, sizeToC)
-}
-
-// PushBack ...
-func (pointer *FloatList) PushBack(v float32) {
-	vToC := C.float(v)
-	C.WrapPushBackFloatList(pointer.h, vToC)
-}
-
-// Size ...
-func (pointer *FloatList) Size() int32 {
-	retval := C.WrapSizeFloatList(pointer.h)
-	return int32(retval)
-}
-
-// At ...
-func (pointer *FloatList) At(idx int32) float32 {
-	idxToC := C.size_t(idx)
-	retval := C.WrapAtFloatList(pointer.h, idxToC)
-	return float32(retval)
 }
 
 // GoSliceOfstring ...
@@ -3200,106 +3025,6 @@ func (pointer *Mat4List) At(idx int32) *Mat4 {
 	return retvalGO
 }
 
-// GoSliceOfMat44 ...
-type GoSliceOfMat44 []*Mat44
-
-// Mat44List  ...
-type Mat44List struct {
-	h C.WrapMat44List
-}
-
-// Get ...
-func (pointer *Mat44List) Get(id int) *Mat44 {
-	v := C.WrapMat44ListGetOperator(pointer.h, C.int(id))
-	vGO := &Mat44{h: v}
-	runtime.SetFinalizer(vGO, func(cleanval *Mat44) {
-		C.WrapMat44Free(cleanval.h)
-	})
-	return vGO
-}
-
-// Set ...
-func (pointer *Mat44List) Set(id int, v *Mat44) {
-	vToC := v.h
-	C.WrapMat44ListSetOperator(pointer.h, C.int(id), vToC)
-}
-
-// Len ...
-func (pointer *Mat44List) Len() int32 {
-	return int32(C.WrapMat44ListLenOperator(pointer.h))
-}
-
-// NewMat44List ...
-func NewMat44List() *Mat44List {
-	retval := C.WrapConstructorMat44List()
-	retvalGO := &Mat44List{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *Mat44List) {
-		C.WrapMat44ListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// NewMat44ListWithSequence ...
-func NewMat44ListWithSequence(sequence GoSliceOfMat44) *Mat44List {
-	var sequencePointer []C.WrapMat44
-	for _, s := range sequence {
-		sequencePointer = append(sequencePointer, s.h)
-	}
-	sequencePointerToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequencePointer))
-	sequencePointerToCSize := C.size_t(sequencePointerToC.Len)
-	sequencePointerToCBuf := (*C.WrapMat44)(unsafe.Pointer(sequencePointerToC.Data))
-	retval := C.WrapConstructorMat44ListWithSequence(sequencePointerToCSize, sequencePointerToCBuf)
-	retvalGO := &Mat44List{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *Mat44List) {
-		C.WrapMat44ListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *Mat44List) Free() {
-	C.WrapMat44ListFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *Mat44List) IsNil() bool {
-	return pointer.h == C.WrapMat44List(nil)
-}
-
-// Clear ...
-func (pointer *Mat44List) Clear() {
-	C.WrapClearMat44List(pointer.h)
-}
-
-// Reserve ...
-func (pointer *Mat44List) Reserve(size int32) {
-	sizeToC := C.size_t(size)
-	C.WrapReserveMat44List(pointer.h, sizeToC)
-}
-
-// PushBack ...
-func (pointer *Mat44List) PushBack(v *Mat44) {
-	vToC := v.h
-	C.WrapPushBackMat44List(pointer.h, vToC)
-}
-
-// Size ...
-func (pointer *Mat44List) Size() int32 {
-	retval := C.WrapSizeMat44List(pointer.h)
-	return int32(retval)
-}
-
-// At ...
-func (pointer *Mat44List) At(idx int32) *Mat44 {
-	idxToC := C.size_t(idx)
-	retval := C.WrapAtMat44List(pointer.h, idxToC)
-	retvalGO := &Mat44{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *Mat44) {
-		C.WrapMat44Free(cleanval.h)
-	})
-	return retvalGO
-}
-
 // GoSliceOfVec3 ...
 type GoSliceOfVec3 []*Vec3
 
@@ -5550,306 +5275,6 @@ func (pointer *MaterialList) At(idx int32) *Material {
 	return retvalGO
 }
 
-// MaterialTexture  ...
-type MaterialTexture struct {
-	h C.WrapMaterialTexture
-}
-
-// GetTexture ...
-func (pointer *MaterialTexture) GetTexture() *TextureRef {
-	v := C.WrapMaterialTextureGetTexture(pointer.h)
-	vGO := &TextureRef{h: v}
-	return vGO
-}
-
-// SetTexture ...
-func (pointer *MaterialTexture) SetTexture(v *TextureRef) {
-	vToC := v.h
-	C.WrapMaterialTextureSetTexture(pointer.h, vToC)
-}
-
-// NewMaterialTexture ...
-func NewMaterialTexture() *MaterialTexture {
-	retval := C.WrapConstructorMaterialTexture()
-	retvalGO := &MaterialTexture{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialTexture) {
-		C.WrapMaterialTextureFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *MaterialTexture) Free() {
-	C.WrapMaterialTextureFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *MaterialTexture) IsNil() bool {
-	return pointer.h == C.WrapMaterialTexture(nil)
-}
-
-// GoSliceOfMaterialTexture ...
-type GoSliceOfMaterialTexture []*MaterialTexture
-
-// MaterialTextureList  ...
-type MaterialTextureList struct {
-	h C.WrapMaterialTextureList
-}
-
-// Get ...
-func (pointer *MaterialTextureList) Get(id int) *MaterialTexture {
-	v := C.WrapMaterialTextureListGetOperator(pointer.h, C.int(id))
-	vGO := &MaterialTexture{h: v}
-	runtime.SetFinalizer(vGO, func(cleanval *MaterialTexture) {
-		C.WrapMaterialTextureFree(cleanval.h)
-	})
-	return vGO
-}
-
-// Set ...
-func (pointer *MaterialTextureList) Set(id int, v *MaterialTexture) {
-	vToC := v.h
-	C.WrapMaterialTextureListSetOperator(pointer.h, C.int(id), vToC)
-}
-
-// Len ...
-func (pointer *MaterialTextureList) Len() int32 {
-	return int32(C.WrapMaterialTextureListLenOperator(pointer.h))
-}
-
-// NewMaterialTextureList ...
-func NewMaterialTextureList() *MaterialTextureList {
-	retval := C.WrapConstructorMaterialTextureList()
-	retvalGO := &MaterialTextureList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialTextureList) {
-		C.WrapMaterialTextureListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// NewMaterialTextureListWithSequence ...
-func NewMaterialTextureListWithSequence(sequence GoSliceOfMaterialTexture) *MaterialTextureList {
-	var sequencePointer []C.WrapMaterialTexture
-	for _, s := range sequence {
-		sequencePointer = append(sequencePointer, s.h)
-	}
-	sequencePointerToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequencePointer))
-	sequencePointerToCSize := C.size_t(sequencePointerToC.Len)
-	sequencePointerToCBuf := (*C.WrapMaterialTexture)(unsafe.Pointer(sequencePointerToC.Data))
-	retval := C.WrapConstructorMaterialTextureListWithSequence(sequencePointerToCSize, sequencePointerToCBuf)
-	retvalGO := &MaterialTextureList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialTextureList) {
-		C.WrapMaterialTextureListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *MaterialTextureList) Free() {
-	C.WrapMaterialTextureListFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *MaterialTextureList) IsNil() bool {
-	return pointer.h == C.WrapMaterialTextureList(nil)
-}
-
-// Clear ...
-func (pointer *MaterialTextureList) Clear() {
-	C.WrapClearMaterialTextureList(pointer.h)
-}
-
-// Reserve ...
-func (pointer *MaterialTextureList) Reserve(size int32) {
-	sizeToC := C.size_t(size)
-	C.WrapReserveMaterialTextureList(pointer.h, sizeToC)
-}
-
-// PushBack ...
-func (pointer *MaterialTextureList) PushBack(v *MaterialTexture) {
-	vToC := v.h
-	C.WrapPushBackMaterialTextureList(pointer.h, vToC)
-}
-
-// Size ...
-func (pointer *MaterialTextureList) Size() int32 {
-	retval := C.WrapSizeMaterialTextureList(pointer.h)
-	return int32(retval)
-}
-
-// At ...
-func (pointer *MaterialTextureList) At(idx int32) *MaterialTexture {
-	idxToC := C.size_t(idx)
-	retval := C.WrapAtMaterialTextureList(pointer.h, idxToC)
-	retvalGO := &MaterialTexture{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialTexture) {
-		C.WrapMaterialTextureFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// MaterialValue  ...
-type MaterialValue struct {
-	h C.WrapMaterialValue
-}
-
-// GetType ...
-func (pointer *MaterialValue) GetType() UniformType {
-	v := C.WrapMaterialValueGetType(pointer.h)
-	return UniformType(v)
-}
-
-// SetType ...
-func (pointer *MaterialValue) SetType(v UniformType) {
-	vToC := C.int32_t(v)
-	C.WrapMaterialValueSetType(pointer.h, vToC)
-}
-
-// GetValue ...
-func (pointer *MaterialValue) GetValue() *FloatList {
-	v := C.WrapMaterialValueGetValue(pointer.h)
-	vGO := &FloatList{h: v}
-	return vGO
-}
-
-// SetValue ...
-func (pointer *MaterialValue) SetValue(v *FloatList) {
-	vToC := v.h
-	C.WrapMaterialValueSetValue(pointer.h, vToC)
-}
-
-// GetCount ...
-func (pointer *MaterialValue) GetCount() uint16 {
-	v := C.WrapMaterialValueGetCount(pointer.h)
-	return uint16(v)
-}
-
-// SetCount ...
-func (pointer *MaterialValue) SetCount(v uint16) {
-	vToC := C.ushort(v)
-	C.WrapMaterialValueSetCount(pointer.h, vToC)
-}
-
-// NewMaterialValue ...
-func NewMaterialValue() *MaterialValue {
-	retval := C.WrapConstructorMaterialValue()
-	retvalGO := &MaterialValue{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialValue) {
-		C.WrapMaterialValueFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *MaterialValue) Free() {
-	C.WrapMaterialValueFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *MaterialValue) IsNil() bool {
-	return pointer.h == C.WrapMaterialValue(nil)
-}
-
-// GoSliceOfMaterialValue ...
-type GoSliceOfMaterialValue []*MaterialValue
-
-// MaterialValueList  ...
-type MaterialValueList struct {
-	h C.WrapMaterialValueList
-}
-
-// Get ...
-func (pointer *MaterialValueList) Get(id int) *MaterialValue {
-	v := C.WrapMaterialValueListGetOperator(pointer.h, C.int(id))
-	vGO := &MaterialValue{h: v}
-	runtime.SetFinalizer(vGO, func(cleanval *MaterialValue) {
-		C.WrapMaterialValueFree(cleanval.h)
-	})
-	return vGO
-}
-
-// Set ...
-func (pointer *MaterialValueList) Set(id int, v *MaterialValue) {
-	vToC := v.h
-	C.WrapMaterialValueListSetOperator(pointer.h, C.int(id), vToC)
-}
-
-// Len ...
-func (pointer *MaterialValueList) Len() int32 {
-	return int32(C.WrapMaterialValueListLenOperator(pointer.h))
-}
-
-// NewMaterialValueList ...
-func NewMaterialValueList() *MaterialValueList {
-	retval := C.WrapConstructorMaterialValueList()
-	retvalGO := &MaterialValueList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialValueList) {
-		C.WrapMaterialValueListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// NewMaterialValueListWithSequence ...
-func NewMaterialValueListWithSequence(sequence GoSliceOfMaterialValue) *MaterialValueList {
-	var sequencePointer []C.WrapMaterialValue
-	for _, s := range sequence {
-		sequencePointer = append(sequencePointer, s.h)
-	}
-	sequencePointerToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequencePointer))
-	sequencePointerToCSize := C.size_t(sequencePointerToC.Len)
-	sequencePointerToCBuf := (*C.WrapMaterialValue)(unsafe.Pointer(sequencePointerToC.Data))
-	retval := C.WrapConstructorMaterialValueListWithSequence(sequencePointerToCSize, sequencePointerToCBuf)
-	retvalGO := &MaterialValueList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialValueList) {
-		C.WrapMaterialValueListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// Free ...
-func (pointer *MaterialValueList) Free() {
-	C.WrapMaterialValueListFree(pointer.h)
-}
-
-// IsNil ...
-func (pointer *MaterialValueList) IsNil() bool {
-	return pointer.h == C.WrapMaterialValueList(nil)
-}
-
-// Clear ...
-func (pointer *MaterialValueList) Clear() {
-	C.WrapClearMaterialValueList(pointer.h)
-}
-
-// Reserve ...
-func (pointer *MaterialValueList) Reserve(size int32) {
-	sizeToC := C.size_t(size)
-	C.WrapReserveMaterialValueList(pointer.h, sizeToC)
-}
-
-// PushBack ...
-func (pointer *MaterialValueList) PushBack(v *MaterialValue) {
-	vToC := v.h
-	C.WrapPushBackMaterialValueList(pointer.h, vToC)
-}
-
-// Size ...
-func (pointer *MaterialValueList) Size() int32 {
-	retval := C.WrapSizeMaterialValueList(pointer.h)
-	return int32(retval)
-}
-
-// At ...
-func (pointer *MaterialValueList) At(idx int32) *MaterialValue {
-	idxToC := C.size_t(idx)
-	retval := C.WrapAtMaterialValueList(pointer.h, idxToC)
-	retvalGO := &MaterialValue{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *MaterialValue) {
-		C.WrapMaterialValueFree(cleanval.h)
-	})
-	return retvalGO
-}
-
 // RenderState  ...
 type RenderState struct {
 	h C.WrapRenderState
@@ -6540,30 +5965,6 @@ func (pointer *ForwardPipelineLight) SetRadius(v float32) {
 	C.WrapForwardPipelineLightSetRadius(pointer.h, vToC)
 }
 
-// GetSphericalAreaRadius ...
-func (pointer *ForwardPipelineLight) GetSphericalAreaRadius() float32 {
-	v := C.WrapForwardPipelineLightGetSphericalAreaRadius(pointer.h)
-	return float32(v)
-}
-
-// SetSphericalAreaRadius ...
-func (pointer *ForwardPipelineLight) SetSphericalAreaRadius(v float32) {
-	vToC := C.float(v)
-	C.WrapForwardPipelineLightSetSphericalAreaRadius(pointer.h, vToC)
-}
-
-// GetIntensity ...
-func (pointer *ForwardPipelineLight) GetIntensity() float32 {
-	v := C.WrapForwardPipelineLightGetIntensity(pointer.h)
-	return float32(v)
-}
-
-// SetIntensity ...
-func (pointer *ForwardPipelineLight) SetIntensity(v float32) {
-	vToC := C.float(v)
-	C.WrapForwardPipelineLightSetIntensity(pointer.h, vToC)
-}
-
 // GetInnerAngle ...
 func (pointer *ForwardPipelineLight) GetInnerAngle() float32 {
 	v := C.WrapForwardPipelineLightGetInnerAngle(pointer.h)
@@ -6848,6 +6249,121 @@ func (pointer *JSON) Free() {
 // IsNil ...
 func (pointer *JSON) IsNil() bool {
 	return pointer.h == C.WrapJSON(nil)
+}
+
+// LuaObject  Opaque reference to an Lua object. This type is used to transfer values between VMs, see [harfang.man.Scripting].
+type LuaObject struct {
+	h C.WrapLuaObject
+}
+
+// Free ...
+func (pointer *LuaObject) Free() {
+	C.WrapLuaObjectFree(pointer.h)
+}
+
+// IsNil ...
+func (pointer *LuaObject) IsNil() bool {
+	return pointer.h == C.WrapLuaObject(nil)
+}
+
+// GoSliceOfLuaObject ...
+type GoSliceOfLuaObject []*LuaObject
+
+// LuaObjectList  ...
+type LuaObjectList struct {
+	h C.WrapLuaObjectList
+}
+
+// Get ...
+func (pointer *LuaObjectList) Get(id int) *LuaObject {
+	v := C.WrapLuaObjectListGetOperator(pointer.h, C.int(id))
+	vGO := &LuaObject{h: v}
+	runtime.SetFinalizer(vGO, func(cleanval *LuaObject) {
+		C.WrapLuaObjectFree(cleanval.h)
+	})
+	return vGO
+}
+
+// Set ...
+func (pointer *LuaObjectList) Set(id int, v *LuaObject) {
+	vToC := v.h
+	C.WrapLuaObjectListSetOperator(pointer.h, C.int(id), vToC)
+}
+
+// Len ...
+func (pointer *LuaObjectList) Len() int32 {
+	return int32(C.WrapLuaObjectListLenOperator(pointer.h))
+}
+
+// NewLuaObjectList ...
+func NewLuaObjectList() *LuaObjectList {
+	retval := C.WrapConstructorLuaObjectList()
+	retvalGO := &LuaObjectList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObjectList) {
+		C.WrapLuaObjectListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// NewLuaObjectListWithSequence ...
+func NewLuaObjectListWithSequence(sequence GoSliceOfLuaObject) *LuaObjectList {
+	var sequencePointer []C.WrapLuaObject
+	for _, s := range sequence {
+		sequencePointer = append(sequencePointer, s.h)
+	}
+	sequencePointerToC := (*reflect.SliceHeader)(unsafe.Pointer(&sequencePointer))
+	sequencePointerToCSize := C.size_t(sequencePointerToC.Len)
+	sequencePointerToCBuf := (*C.WrapLuaObject)(unsafe.Pointer(sequencePointerToC.Data))
+	retval := C.WrapConstructorLuaObjectListWithSequence(sequencePointerToCSize, sequencePointerToCBuf)
+	retvalGO := &LuaObjectList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObjectList) {
+		C.WrapLuaObjectListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// Free ...
+func (pointer *LuaObjectList) Free() {
+	C.WrapLuaObjectListFree(pointer.h)
+}
+
+// IsNil ...
+func (pointer *LuaObjectList) IsNil() bool {
+	return pointer.h == C.WrapLuaObjectList(nil)
+}
+
+// Clear ...
+func (pointer *LuaObjectList) Clear() {
+	C.WrapClearLuaObjectList(pointer.h)
+}
+
+// Reserve ...
+func (pointer *LuaObjectList) Reserve(size int32) {
+	sizeToC := C.size_t(size)
+	C.WrapReserveLuaObjectList(pointer.h, sizeToC)
+}
+
+// PushBack ...
+func (pointer *LuaObjectList) PushBack(v *LuaObject) {
+	vToC := v.h
+	C.WrapPushBackLuaObjectList(pointer.h, vToC)
+}
+
+// Size ...
+func (pointer *LuaObjectList) Size() int32 {
+	retval := C.WrapSizeLuaObjectList(pointer.h)
+	return int32(retval)
+}
+
+// At ...
+func (pointer *LuaObjectList) At(idx int32) *LuaObject {
+	idxToC := C.size_t(idx)
+	retval := C.WrapAtLuaObjectList(pointer.h, idxToC)
+	retvalGO := &LuaObject{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObject) {
+		C.WrapLuaObjectFree(cleanval.h)
+	})
+	return retvalGO
 }
 
 // SceneAnimRef  Reference to a scene animation.
@@ -7160,9 +6676,9 @@ func (pointer *Scene) IsNil() bool {
 }
 
 // GetNode Get a node by name. For more complex queries see [harfang.Scene_GetNodeEx].
-func (pointer *Scene) GetNode(name *string) *Node {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+func (pointer *Scene) GetNode(name string) *Node {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	retval := C.WrapGetNodeScene(pointer.h, nameToC)
 	retvalGO := &Node{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *Node) {
@@ -7172,9 +6688,9 @@ func (pointer *Scene) GetNode(name *string) *Node {
 }
 
 // GetNodeEx Get a node by its absolute path in the node hierarchy.  A node path is constructed as follow:  - Nodes are refered to by their name. - To address the child of a node, use the `/` delimiter between its parent name and the child name. - To address a node inside an instance component, use the `:` delimiter. - There is no limit on the number of delimiters you can use.  Examples:  Get the node named `child` parented to the `root` node.  ```python child = scene.GetNodeEx('root/child') ```  Get the node named `dummy` instantiated by the `root` node.  ```python dummy = my_scene.GetNodeEx('root:dummy') ```
-func (pointer *Scene) GetNodeEx(path *string) *Node {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Scene) GetNodeEx(path string) *Node {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapGetNodeExScene(pointer.h, pathToC)
 	retvalGO := &Node{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *Node) {
@@ -7261,16 +6777,6 @@ func (pointer *Scene) IsRoot(node *Node) bool {
 	nodeToC := node.h
 	retval := C.WrapIsRootScene(pointer.h, nodeToC)
 	return bool(retval)
-}
-
-// GetSceneAnimsName ...
-func (pointer *Scene) GetSceneAnimsName() *StringList {
-	retval := C.WrapGetSceneAnimsNameScene(pointer.h)
-	retvalGO := &StringList{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *StringList) {
-		C.WrapStringListFree(cleanval.h)
-	})
-	return retvalGO
 }
 
 // ReadyWorldMatrices ...
@@ -7454,9 +6960,9 @@ func (pointer *Scene) UpdatePlayingAnims(dt int64) {
 }
 
 // HasKey ...
-func (pointer *Scene) HasKey(key *string) bool {
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+func (pointer *Scene) HasKey(key string) bool {
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	retval := C.WrapHasKeyScene(pointer.h, keyToC)
 	return bool(retval)
 }
@@ -7472,26 +6978,26 @@ func (pointer *Scene) GetKeys() *StringList {
 }
 
 // RemoveKey ...
-func (pointer *Scene) RemoveKey(key *string) {
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+func (pointer *Scene) RemoveKey(key string) {
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	C.WrapRemoveKeyScene(pointer.h, keyToC)
 }
 
 // GetValue ...
-func (pointer *Scene) GetValue(key *string) string {
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+func (pointer *Scene) GetValue(key string) string {
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	retval := C.WrapGetValueScene(pointer.h, keyToC)
 	return C.GoString(retval)
 }
 
 // SetValue ...
-func (pointer *Scene) SetValue(key *string, value *string) {
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
-	valueToC1 := C.CString(*value)
-	valueToC := &valueToC1
+func (pointer *Scene) SetValue(key string, value string) {
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
+	valueToC, idFinvalueToC := wrapString(value)
+	defer idFinvalueToC()
 	C.WrapSetValueScene(pointer.h, keyToC, valueToC)
 }
 
@@ -8186,9 +7692,9 @@ func (pointer *Scene) CreateScript() *Script {
 }
 
 // CreateScriptWithPath ...
-func (pointer *Scene) CreateScriptWithPath(path *string) *Script {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Scene) CreateScriptWithPath(path string) *Script {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCreateScriptSceneWithPath(pointer.h, pathToC)
 	retvalGO := &Script{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *Script) {
@@ -8275,6 +7781,14 @@ func (pointer *Scene) DestroyInstance(Instance *Instance) {
 	C.WrapDestroyInstanceScene(pointer.h, InstanceToC)
 }
 
+// SetProbe ...
+func (pointer *Scene) SetProbe(irradiance *TextureRef, radiance *TextureRef, brdf *TextureRef) {
+	irradianceToC := irradiance.h
+	radianceToC := radiance.h
+	brdfToC := brdf.h
+	C.WrapSetProbeScene(pointer.h, irradianceToC, radianceToC, brdfToC)
+}
+
 // GetCurrentCamera Get the current camera.
 func (pointer *Scene) GetCurrentCamera() *Node {
 	retval := C.WrapGetCurrentCameraScene(pointer.h)
@@ -8327,10 +7841,10 @@ func (pointer *SceneView) GetNodes(scene *Scene) *NodeList {
 }
 
 // GetNode Find a node by name in the view. Pass the host scene as the `scene` parameter.  See [harfang.man.Scene].
-func (pointer *SceneView) GetNode(scene *Scene, name *string) *Node {
+func (pointer *SceneView) GetNode(scene *Scene, name string) *Node {
 	sceneToC := scene.h
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	retval := C.WrapGetNodeSceneView(pointer.h, sceneToC, nameToC)
 	retvalGO := &Node{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *Node) {
@@ -8605,9 +8119,9 @@ func (pointer *Node) GetName() string {
 }
 
 // SetName Set the node name.
-func (pointer *Node) SetName(name *string) {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+func (pointer *Node) SetName(name string) {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	C.WrapSetNameNode(pointer.h, nameToC)
 }
 
@@ -8729,9 +8243,9 @@ func (pointer *Node) GetInstanceSceneView() *SceneView {
 }
 
 // GetInstanceSceneAnim ...
-func (pointer *Node) GetInstanceSceneAnim(path *string) *SceneAnimRef {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Node) GetInstanceSceneAnim(path string) *SceneAnimRef {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapGetInstanceSceneAnimNode(pointer.h, pathToC)
 	retvalGO := &SceneAnimRef{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *SceneAnimRef) {
@@ -9206,9 +8720,9 @@ func (pointer *Object) GetMaterial(slotidx int32) *Material {
 }
 
 // GetMaterialWithName Return the object [harfang.Material] at index.
-func (pointer *Object) GetMaterialWithName(name *string) *Material {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+func (pointer *Object) GetMaterialWithName(name string) *Material {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	retval := C.WrapGetMaterialObjectWithName(pointer.h, nameToC)
 	var retvalGO *Material
 	if retval != nil {
@@ -9247,10 +8761,10 @@ func (pointer *Object) GetMaterialName(slotidx int32) string {
 }
 
 // SetMaterialName ...
-func (pointer *Object) SetMaterialName(slotidx int32, name *string) {
+func (pointer *Object) SetMaterialName(slotidx int32, name string) {
 	slotidxToC := C.size_t(slotidx)
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	C.WrapSetMaterialNameObject(pointer.h, slotidxToC, nameToC)
 }
 
@@ -9824,9 +9338,9 @@ func (pointer *Collision) GetCollisionResource() string {
 }
 
 // SetCollisionResource ...
-func (pointer *Collision) SetCollisionResource(path *string) {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Collision) SetCollisionResource(path string) {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	C.WrapSetCollisionResourceCollision(pointer.h, pathToC)
 }
 
@@ -9865,16 +9379,16 @@ func (pointer *Instance) GetPath() string {
 }
 
 // SetPath ...
-func (pointer *Instance) SetPath(path *string) {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Instance) SetPath(path string) {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	C.WrapSetPathInstance(pointer.h, pathToC)
 }
 
 // SetOnInstantiateAnim ...
-func (pointer *Instance) SetOnInstantiateAnim(anim *string) {
-	animToC1 := C.CString(*anim)
-	animToC := &animToC1
+func (pointer *Instance) SetOnInstantiateAnim(anim string) {
+	animToC, idFinanimToC := wrapString(anim)
+	defer idFinanimToC()
 	C.WrapSetOnInstantiateAnimInstance(pointer.h, animToC)
 }
 
@@ -9946,9 +9460,9 @@ func (pointer *Script) GetPath() string {
 }
 
 // SetPath ...
-func (pointer *Script) SetPath(path *string) {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func (pointer *Script) SetPath(path string) {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	C.WrapSetPathScript(pointer.h, pathToC)
 }
 
@@ -10502,31 +10016,6 @@ func (pointer *Environment) SetBrdfMap(v *TextureRef) {
 	C.WrapEnvironmentSetBrdfMap(pointer.h, vToC)
 }
 
-// GetEnvMap ...
-func (pointer *Environment) GetEnvMap() *TextureRef {
-	v := C.WrapEnvironmentGetEnvMap(pointer.h)
-	vGO := &TextureRef{h: v}
-	return vGO
-}
-
-// SetEnvMap ...
-func (pointer *Environment) SetEnvMap(v *TextureRef) {
-	vToC := v.h
-	C.WrapEnvironmentSetEnvMap(pointer.h, vToC)
-}
-
-// GetEnvRot ...
-func (pointer *Environment) GetEnvRot() float32 {
-	v := C.WrapEnvironmentGetEnvRot(pointer.h)
-	return float32(v)
-}
-
-// SetEnvRot ...
-func (pointer *Environment) SetEnvRot(v float32) {
-	vToC := C.float(v)
-	C.WrapEnvironmentSetEnvRot(pointer.h, vToC)
-}
-
 // Free ...
 func (pointer *Environment) Free() {
 	C.WrapEnvironmentFree(pointer.h)
@@ -10535,22 +10024,6 @@ func (pointer *Environment) Free() {
 // IsNil ...
 func (pointer *Environment) IsNil() bool {
 	return pointer.h == C.WrapEnvironment(nil)
-}
-
-// GetEnvSH ...
-func (pointer *Environment) GetEnvSH() *Mat44List {
-	retval := C.WrapGetEnvSHEnvironment(pointer.h)
-	retvalGO := &Mat44List{h: retval}
-	runtime.SetFinalizer(retvalGO, func(cleanval *Mat44List) {
-		C.WrapMat44ListFree(cleanval.h)
-	})
-	return retvalGO
-}
-
-// SetEnvSH ...
-func (pointer *Environment) SetEnvSH(envsh *Mat44List) {
-	envshToC := envsh.h
-	C.WrapSetEnvSHEnvironment(pointer.h, envshToC)
 }
 
 // SceneForwardPipelinePassViewId  ...
@@ -11101,20 +10574,6 @@ func (pointer *SceneBullet3Physics) NodeSetAngularFactor(node *Node, k *Vec3) {
 	C.WrapNodeSetAngularFactorSceneBullet3Physics(pointer.h, nodeToC, kToC)
 }
 
-// NodeAddConstraint ...
-func (pointer *SceneBullet3Physics) NodeAddConstraint(nodeA *Node, nodeB *Node, anchorALocal *Mat4, anchorBInLocalSpaceA *Mat4) *VoidPointer {
-	nodeAToC := nodeA.h
-	nodeBToC := nodeB.h
-	anchorALocalToC := anchorALocal.h
-	anchorBInLocalSpaceAToC := anchorBInLocalSpaceA.h
-	retval := C.WrapNodeAddConstraintSceneBullet3Physics(pointer.h, nodeAToC, nodeBToC, anchorALocalToC, anchorBInLocalSpaceAToC)
-	var retvalGO *VoidPointer
-	if retval != nil {
-		retvalGO = &VoidPointer{h: retval}
-	}
-	return retvalGO
-}
-
 // NodeCollideWorld ...
 func (pointer *SceneBullet3Physics) NodeCollideWorld(node *Node, world *Mat4) *NodePairContacts {
 	nodeToC := node.h
@@ -11174,6 +10633,211 @@ func (pointer *SceneBullet3Physics) RenderCollision(viewid uint16, vtxlayout *Ve
 	renderstateToC := renderstate.h
 	depthToC := C.uint32_t(depth)
 	C.WrapRenderCollisionSceneBullet3Physics(pointer.h, viewidToC, vtxlayoutToC, prgToC, renderstateToC, depthToC)
+}
+
+// SceneLuaVM  Lua VM for scene script components.  See [harfang.man.Scripting].
+type SceneLuaVM struct {
+	h C.WrapSceneLuaVM
+}
+
+// NewSceneLuaVM Lua VM for scene script components.  See [harfang.man.Scripting].
+func NewSceneLuaVM() *SceneLuaVM {
+	retval := C.WrapConstructorSceneLuaVM()
+	retvalGO := &SceneLuaVM{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *SceneLuaVM) {
+		C.WrapSceneLuaVMFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// Free ...
+func (pointer *SceneLuaVM) Free() {
+	C.WrapSceneLuaVMFree(pointer.h)
+}
+
+// IsNil ...
+func (pointer *SceneLuaVM) IsNil() bool {
+	return pointer.h == C.WrapSceneLuaVM(nil)
+}
+
+// CreateScriptFromSource ...
+func (pointer *SceneLuaVM) CreateScriptFromSource(scene *Scene, script *Script, src string) bool {
+	sceneToC := scene.h
+	scriptToC := script.h
+	srcToC, idFinsrcToC := wrapString(src)
+	defer idFinsrcToC()
+	retval := C.WrapCreateScriptFromSourceSceneLuaVM(pointer.h, sceneToC, scriptToC, srcToC)
+	return bool(retval)
+}
+
+// CreateScriptFromFile ...
+func (pointer *SceneLuaVM) CreateScriptFromFile(scene *Scene, script *Script) bool {
+	sceneToC := scene.h
+	scriptToC := script.h
+	retval := C.WrapCreateScriptFromFileSceneLuaVM(pointer.h, sceneToC, scriptToC)
+	return bool(retval)
+}
+
+// CreateScriptFromAssets ...
+func (pointer *SceneLuaVM) CreateScriptFromAssets(scene *Scene, script *Script) bool {
+	sceneToC := scene.h
+	scriptToC := script.h
+	retval := C.WrapCreateScriptFromAssetsSceneLuaVM(pointer.h, sceneToC, scriptToC)
+	return bool(retval)
+}
+
+// CreateNodeScriptsFromFile ...
+func (pointer *SceneLuaVM) CreateNodeScriptsFromFile(scene *Scene, node *Node) *ScriptList {
+	sceneToC := scene.h
+	nodeToC := node.h
+	retval := C.WrapCreateNodeScriptsFromFileSceneLuaVM(pointer.h, sceneToC, nodeToC)
+	retvalGO := &ScriptList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *ScriptList) {
+		C.WrapScriptListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// CreateNodeScriptsFromAssets ...
+func (pointer *SceneLuaVM) CreateNodeScriptsFromAssets(scene *Scene, node *Node) *ScriptList {
+	sceneToC := scene.h
+	nodeToC := node.h
+	retval := C.WrapCreateNodeScriptsFromAssetsSceneLuaVM(pointer.h, sceneToC, nodeToC)
+	retvalGO := &ScriptList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *ScriptList) {
+		C.WrapScriptListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// SceneCreateScriptsFromFile ...
+func (pointer *SceneLuaVM) SceneCreateScriptsFromFile(scene *Scene) *ScriptList {
+	sceneToC := scene.h
+	retval := C.WrapSceneCreateScriptsFromFileSceneLuaVM(pointer.h, sceneToC)
+	retvalGO := &ScriptList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *ScriptList) {
+		C.WrapScriptListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// SceneCreateScriptsFromAssets ...
+func (pointer *SceneLuaVM) SceneCreateScriptsFromAssets(scene *Scene) *ScriptList {
+	sceneToC := scene.h
+	retval := C.WrapSceneCreateScriptsFromAssetsSceneLuaVM(pointer.h, sceneToC)
+	retvalGO := &ScriptList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *ScriptList) {
+		C.WrapScriptListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// GarbageCollect ...
+func (pointer *SceneLuaVM) GarbageCollect(scene *Scene) *ScriptList {
+	sceneToC := scene.h
+	retval := C.WrapGarbageCollectSceneLuaVM(pointer.h, sceneToC)
+	retvalGO := &ScriptList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *ScriptList) {
+		C.WrapScriptListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// DestroyScripts ...
+func (pointer *SceneLuaVM) DestroyScripts(scripts *ScriptList) {
+	scriptsToC := scripts.h
+	C.WrapDestroyScriptsSceneLuaVM(pointer.h, scriptsToC)
+}
+
+// GetScriptInterface ...
+func (pointer *SceneLuaVM) GetScriptInterface(script *Script) *StringList {
+	scriptToC := script.h
+	retval := C.WrapGetScriptInterfaceSceneLuaVM(pointer.h, scriptToC)
+	retvalGO := &StringList{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *StringList) {
+		C.WrapStringListFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// GetScriptCount ...
+func (pointer *SceneLuaVM) GetScriptCount() int32 {
+	retval := C.WrapGetScriptCountSceneLuaVM(pointer.h)
+	return int32(retval)
+}
+
+// GetScriptEnv ...
+func (pointer *SceneLuaVM) GetScriptEnv(script *Script) *LuaObject {
+	scriptToC := script.h
+	retval := C.WrapGetScriptEnvSceneLuaVM(pointer.h, scriptToC)
+	retvalGO := &LuaObject{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObject) {
+		C.WrapLuaObjectFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// GetScriptValue ...
+func (pointer *SceneLuaVM) GetScriptValue(script *Script, name string) *LuaObject {
+	scriptToC := script.h
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
+	retval := C.WrapGetScriptValueSceneLuaVM(pointer.h, scriptToC, nameToC)
+	retvalGO := &LuaObject{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObject) {
+		C.WrapLuaObjectFree(cleanval.h)
+	})
+	return retvalGO
+}
+
+// SetScriptValue ...
+func (pointer *SceneLuaVM) SetScriptValue(script *Script, name string, value *LuaObject) bool {
+	scriptToC := script.h
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
+	valueToC := value.h
+	retval := C.WrapSetScriptValueSceneLuaVM(pointer.h, scriptToC, nameToC, valueToC)
+	return bool(retval)
+}
+
+// Call ...
+func (pointer *SceneLuaVM) Call(script *Script, function string, args *LuaObjectList) (bool, *LuaObjectList) {
+	scriptToC := script.h
+	functionToC, idFinfunctionToC := wrapString(function)
+	defer idFinfunctionToC()
+	argsToC := args.h
+	retvals := NewLuaObjectList()
+	retvalsToC := retvals.h
+	retval := C.WrapCallSceneLuaVM(pointer.h, scriptToC, functionToC, argsToC, retvalsToC)
+	return bool(retval), retvals
+}
+
+// CallWithSliceOfArgs ...
+func (pointer *SceneLuaVM) CallWithSliceOfArgs(script *Script, function string, SliceOfargs GoSliceOfLuaObject) (bool, *LuaObjectList) {
+	scriptToC := script.h
+	functionToC, idFinfunctionToC := wrapString(function)
+	defer idFinfunctionToC()
+	var SliceOfargsPointer []C.WrapLuaObject
+	for _, s := range SliceOfargs {
+		SliceOfargsPointer = append(SliceOfargsPointer, s.h)
+	}
+	SliceOfargsPointerToC := (*reflect.SliceHeader)(unsafe.Pointer(&SliceOfargsPointer))
+	SliceOfargsPointerToCSize := C.size_t(SliceOfargsPointerToC.Len)
+	SliceOfargsPointerToCBuf := (*C.WrapLuaObject)(unsafe.Pointer(SliceOfargsPointerToC.Data))
+	retvals := NewLuaObjectList()
+	retvalsToC := retvals.h
+	retval := C.WrapCallSceneLuaVMWithSliceOfArgs(pointer.h, scriptToC, functionToC, SliceOfargsPointerToCSize, SliceOfargsPointerToCBuf, retvalsToC)
+	return bool(retval), retvals
+}
+
+// MakeLuaObject ...
+func (pointer *SceneLuaVM) MakeLuaObject() *LuaObject {
+	retval := C.WrapMakeLuaObjectSceneLuaVM(pointer.h)
+	retvalGO := &LuaObject{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *LuaObject) {
+		C.WrapLuaObjectFree(cleanval.h)
+	})
+	return retvalGO
 }
 
 // SceneClocks  Holds clocks for the different scene systems.  This is required as some system such as the physics system may run at a different rate than the scene.
@@ -13230,6 +12894,124 @@ func (pointer *OpenVRState) IsNil() bool {
 	return pointer.h == C.WrapOpenVRState(nil)
 }
 
+// SRanipalEyeState  ...
+type SRanipalEyeState struct {
+	h C.WrapSRanipalEyeState
+}
+
+// GetPupilDiameterValid ...
+func (pointer *SRanipalEyeState) GetPupilDiameterValid() bool {
+	v := C.WrapSRanipalEyeStateGetPupilDiameterValid(pointer.h)
+	return bool(v)
+}
+
+// SetPupilDiameterValid ...
+func (pointer *SRanipalEyeState) SetPupilDiameterValid(v bool) {
+	vToC := C.bool(v)
+	C.WrapSRanipalEyeStateSetPupilDiameterValid(pointer.h, vToC)
+}
+
+// GetGazeOriginMm ...
+func (pointer *SRanipalEyeState) GetGazeOriginMm() *Vec3 {
+	v := C.WrapSRanipalEyeStateGetGazeOriginMm(pointer.h)
+	vGO := &Vec3{h: v}
+	return vGO
+}
+
+// SetGazeOriginMm ...
+func (pointer *SRanipalEyeState) SetGazeOriginMm(v *Vec3) {
+	vToC := v.h
+	C.WrapSRanipalEyeStateSetGazeOriginMm(pointer.h, vToC)
+}
+
+// GetGazeDirectionNormalized ...
+func (pointer *SRanipalEyeState) GetGazeDirectionNormalized() *Vec3 {
+	v := C.WrapSRanipalEyeStateGetGazeDirectionNormalized(pointer.h)
+	vGO := &Vec3{h: v}
+	return vGO
+}
+
+// SetGazeDirectionNormalized ...
+func (pointer *SRanipalEyeState) SetGazeDirectionNormalized(v *Vec3) {
+	vToC := v.h
+	C.WrapSRanipalEyeStateSetGazeDirectionNormalized(pointer.h, vToC)
+}
+
+// GetPupilDiameterMm ...
+func (pointer *SRanipalEyeState) GetPupilDiameterMm() float32 {
+	v := C.WrapSRanipalEyeStateGetPupilDiameterMm(pointer.h)
+	return float32(v)
+}
+
+// SetPupilDiameterMm ...
+func (pointer *SRanipalEyeState) SetPupilDiameterMm(v float32) {
+	vToC := C.float(v)
+	C.WrapSRanipalEyeStateSetPupilDiameterMm(pointer.h, vToC)
+}
+
+// GetEyeOpenness ...
+func (pointer *SRanipalEyeState) GetEyeOpenness() float32 {
+	v := C.WrapSRanipalEyeStateGetEyeOpenness(pointer.h)
+	return float32(v)
+}
+
+// SetEyeOpenness ...
+func (pointer *SRanipalEyeState) SetEyeOpenness(v float32) {
+	vToC := C.float(v)
+	C.WrapSRanipalEyeStateSetEyeOpenness(pointer.h, vToC)
+}
+
+// Free ...
+func (pointer *SRanipalEyeState) Free() {
+	C.WrapSRanipalEyeStateFree(pointer.h)
+}
+
+// IsNil ...
+func (pointer *SRanipalEyeState) IsNil() bool {
+	return pointer.h == C.WrapSRanipalEyeState(nil)
+}
+
+// SRanipalState  ...
+type SRanipalState struct {
+	h C.WrapSRanipalState
+}
+
+// GetRightEye ...
+func (pointer *SRanipalState) GetRightEye() *SRanipalEyeState {
+	v := C.WrapSRanipalStateGetRightEye(pointer.h)
+	vGO := &SRanipalEyeState{h: v}
+	return vGO
+}
+
+// SetRightEye ...
+func (pointer *SRanipalState) SetRightEye(v *SRanipalEyeState) {
+	vToC := v.h
+	C.WrapSRanipalStateSetRightEye(pointer.h, vToC)
+}
+
+// GetLeftEye ...
+func (pointer *SRanipalState) GetLeftEye() *SRanipalEyeState {
+	v := C.WrapSRanipalStateGetLeftEye(pointer.h)
+	vGO := &SRanipalEyeState{h: v}
+	return vGO
+}
+
+// SetLeftEye ...
+func (pointer *SRanipalState) SetLeftEye(v *SRanipalEyeState) {
+	vToC := v.h
+	C.WrapSRanipalStateSetLeftEye(pointer.h, vToC)
+}
+
+// Free ...
+func (pointer *SRanipalState) Free() {
+	C.WrapSRanipalStateFree(pointer.h)
+}
+
+// IsNil ...
+func (pointer *SRanipalState) IsNil() bool {
+	return pointer.h == C.WrapSRanipalState(nil)
+}
+
 // Vertex  ...
 type Vertex struct {
 	h C.WrapVertex
@@ -14152,22 +13934,6 @@ var (
 	TFD0S8 = TextureFormat(C.GetTextureFormat(84))
 )
 
-// UniformType ...
-type UniformType int32
-
-var (
-	// UTSampler ...
-	UTSampler = UniformType(C.GetUniformType(0))
-	// UTEnd ...
-	UTEnd = UniformType(C.GetUniformType(1))
-	// UTVec4 ...
-	UTVec4 = UniformType(C.GetUniformType(2))
-	// UTMat3 ...
-	UTMat3 = UniformType(C.GetUniformType(3))
-	// UTMat4 ...
-	UTMat4 = UniformType(C.GetUniformType(4))
-)
-
 // BackbufferRatio ...
 type BackbufferRatio int32
 
@@ -14500,8 +14266,6 @@ var (
 	RBTKinematic = RigidBodyType(C.GetRigidBodyType(1))
 	// RBTStatic ...
 	RBTStatic = RigidBodyType(C.GetRigidBodyType(2))
-	// RBTTrigger ...
-	RBTTrigger = RigidBodyType(C.GetRigidBodyType(3))
 )
 
 // CollisionEventTrackingMode ...
@@ -14530,8 +14294,6 @@ var (
 	CTCylinder = CollisionType(C.GetCollisionType(4))
 	// CTMesh ...
 	CTMesh = CollisionType(C.GetCollisionType(5))
-	// CTMeshConvex ...
-	CTMeshConvex = CollisionType(C.GetCollisionType(6))
 )
 
 // NodeComponentIdx ...
@@ -15944,10 +15706,10 @@ func ReadString(file *File) string {
 }
 
 // WriteString Write a string to a file as 32 bit integer size followed by the string content in UTF8.
-func WriteString(file *File, value *string) bool {
+func WriteString(file *File, value string) bool {
 	fileToC := file.h
-	valueToC1 := C.CString(*value)
-	valueToC := &valueToC1
+	valueToC, idFinvalueToC := wrapString(value)
+	defer idFinvalueToC()
 	retval := C.WrapWriteString(fileToC, valueToC)
 	return bool(retval)
 }
@@ -16111,127 +15873,127 @@ func CopyDirRecursive(src string, dst string) bool {
 }
 
 // IsPathAbsolute Test if the provided path is an absolute or relative path.
-func IsPathAbsolute(path *string) bool {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func IsPathAbsolute(path string) bool {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapIsPathAbsolute(pathToC)
 	return bool(retval)
 }
 
 // PathToDisplay Format a path for display.
-func PathToDisplay(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func PathToDisplay(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapPathToDisplay(pathToC)
 	return C.GoString(retval)
 }
 
 // NormalizePath Normalize a path according to the following conventions:  - Replace all whitespaces by underscores.
-func NormalizePath(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func NormalizePath(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapNormalizePath(pathToC)
 	return C.GoString(retval)
 }
 
 // FactorizePath Return the input path with all redundant navigation entries stripped (folder separator, `..` and `.` entries).
-func FactorizePath(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func FactorizePath(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapFactorizePath(pathToC)
 	return C.GoString(retval)
 }
 
 // CleanPath Cleanup a local filesystem path according to the host platform conventions.  - Remove redundant folder separators. - Remove redundant `.` and `..` folder entries. - Ensure forward slash (`/`) folder separators on Unix and back slash (`\\`) folder separators on Windows.
-func CleanPath(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func CleanPath(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCleanPath(pathToC)
 	return C.GoString(retval)
 }
 
 // CutFilePath Return the folder navigation part of a file path. The file name and its extension are stripped.  See [harfang.CutFileExtension] and [harfang.CutFileName].
-func CutFilePath(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func CutFilePath(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCutFilePath(pathToC)
 	return C.GoString(retval)
 }
 
 // CutFileName Return the name part of a file path. All folder navigation and extension are stripped.  See [harfang.CutFileExtension] and [harfang.CutFilePath].
-func CutFileName(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func CutFileName(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCutFileName(pathToC)
 	return C.GoString(retval)
 }
 
 // CutFileExtension Return a file path with its extension stripped.  See [harfang.CutFilePath] and [harfang.CutFileName].
-func CutFileExtension(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func CutFileExtension(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCutFileExtension(pathToC)
 	return C.GoString(retval)
 }
 
 // GetFilePath Return the path part of a file path (excluding file name and extension).
-func GetFilePath(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func GetFilePath(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapGetFilePath(pathToC)
 	return C.GoString(retval)
 }
 
 // GetFileName Return the name part of a file path (including its extension).
-func GetFileName(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func GetFileName(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapGetFileName(pathToC)
 	return C.GoString(retval)
 }
 
 // GetFileExtension Return the extension part of a file path.
-func GetFileExtension(path *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func GetFileExtension(path string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapGetFileExtension(pathToC)
 	return C.GoString(retval)
 }
 
 // HasFileExtension Test the extension of a file path.
-func HasFileExtension(path *string) bool {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func HasFileExtension(path string) bool {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapHasFileExtension(pathToC)
 	return bool(retval)
 }
 
 // PathStartsWith Test if the provided path starts with the provided prefix.
-func PathStartsWith(path *string, with *string) bool {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
-	withToC1 := C.CString(*with)
-	withToC := &withToC1
+func PathStartsWith(path string, with string) bool {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
+	withToC, idFinwithToC := wrapString(with)
+	defer idFinwithToC()
 	retval := C.WrapPathStartsWith(pathToC, withToC)
 	return bool(retval)
 }
 
 // PathStripPrefix Return a copy of the input path stripped of the provided prefix.
-func PathStripPrefix(path *string, prefix *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
-	prefixToC1 := C.CString(*prefix)
-	prefixToC := &prefixToC1
+func PathStripPrefix(path string, prefix string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
+	prefixToC, idFinprefixToC := wrapString(prefix)
+	defer idFinprefixToC()
 	retval := C.WrapPathStripPrefix(pathToC, prefixToC)
 	return C.GoString(retval)
 }
 
 // PathStripSuffix Return a copy of the input path stripped of the provided suffix.
-func PathStripSuffix(path *string, suffix *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
-	suffixToC1 := C.CString(*suffix)
-	suffixToC := &suffixToC1
+func PathStripSuffix(path string, suffix string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
+	suffixToC, idFinsuffixToC := wrapString(suffix)
+	defer idFinsuffixToC()
 	retval := C.WrapPathStripSuffix(pathToC, suffixToC)
 	return C.GoString(retval)
 }
@@ -16244,11 +16006,11 @@ func PathJoin(elements *StringList) string {
 }
 
 // SwapFileExtension Return the input file path with its extension replaced.
-func SwapFileExtension(path *string, ext *string) string {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
-	extToC1 := C.CString(*ext)
-	extToC := &extToC1
+func SwapFileExtension(path string, ext string) string {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
+	extToC, idFinextToC := wrapString(ext)
+	defer idFinextToC()
 	retval := C.WrapSwapFileExtension(pathToC, extToC)
 	return C.GoString(retval)
 }
@@ -19522,21 +19284,6 @@ func NewWindowWithTitleWidthHeightBppVisibility(title string, width int32, heigh
 	return retvalGO
 }
 
-// NewWindowWithBppVisibilityRefreshRate Create a new window.
-func NewWindowWithBppVisibilityRefreshRate(width int32, height int32, bpp int32, visibility WindowVisibility, refreshrate int32) *Window {
-	widthToC := C.int32_t(width)
-	heightToC := C.int32_t(height)
-	bppToC := C.int32_t(bpp)
-	visibilityToC := C.int32_t(visibility)
-	refreshrateToC := C.int32_t(refreshrate)
-	retval := C.WrapNewWindowWithBppVisibilityRefreshRate(widthToC, heightToC, bppToC, visibilityToC, refreshrateToC)
-	var retvalGO *Window
-	if retval != nil {
-		retvalGO = &Window{h: retval}
-	}
-	return retvalGO
-}
-
 // NewFullscreenWindow Create a new fullscreen window.
 func NewFullscreenWindow(monitor *Monitor, modeindex int32) *Window {
 	monitorToC := monitor.h
@@ -19670,10 +19417,10 @@ func GetWindowTitle(window *Window) (bool, *string) {
 }
 
 // SetWindowTitle Set window title.
-func SetWindowTitle(window *Window, title *string) bool {
+func SetWindowTitle(window *Window, title string) bool {
 	windowToC := window.h
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	retval := C.WrapSetWindowTitle(windowToC, titleToC)
 	return bool(retval)
 }
@@ -20690,17 +20437,17 @@ func DestroyProgram(h *ProgramHandle) {
 }
 
 // LoadTextureFlagsFromFile Load texture flags in the texture metafile from the local filesystem.
-func LoadTextureFlagsFromFile(path *string) uint64 {
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+func LoadTextureFlagsFromFile(path string) uint64 {
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapLoadTextureFlagsFromFile(pathToC)
 	return uint64(retval)
 }
 
 // LoadTextureFlagsFromAssets Load texture flags in the texture metafile from the assets system.  See [harfang.man.Assets].
-func LoadTextureFlagsFromAssets(name *string) uint64 {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+func LoadTextureFlagsFromAssets(name string) uint64 {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	retval := C.WrapLoadTextureFlagsFromAssets(nameToC)
 	return uint64(retval)
 }
@@ -23131,21 +22878,6 @@ func PrepareForwardPipelineLightsWithSliceOfLights(SliceOflights GoSliceOfForwar
 	return retvalGO
 }
 
-// SubmitModelToForwardPipeline Submit a model to the forward pipeline.  See [harfang.SetViewMode].
-func SubmitModelToForwardPipeline(viewid *uint16, mdl *Model, pipeline *ForwardPipeline, prg *PipelineProgram, prgvariant uint32, pipelinestage uint8, ambient *Color, lights *ForwardPipelineLights, fog *ForwardPipelineFog, mtx *Mat4) {
-	viewidToC := (*C.ushort)(unsafe.Pointer(viewid))
-	mdlToC := mdl.h
-	pipelineToC := pipeline.h
-	prgToC := prg.h
-	prgvariantToC := C.uint32_t(prgvariant)
-	pipelinestageToC := C.uchar(pipelinestage)
-	ambientToC := ambient.h
-	lightsToC := lights.h
-	fogToC := fog.h
-	mtxToC := mtx.h
-	C.WrapSubmitModelToForwardPipeline(viewidToC, mdlToC, pipelineToC, prgToC, prgvariantToC, pipelinestageToC, ambientToC, lightsToC, fogToC, mtxToC)
-}
-
 // LoadFontFromFile Load a TrueType (TTF) font from the local filesystem.  See [harfang.man.Assets].
 func LoadFontFromFile(path string) *Font {
 	pathToC, idFinpathToC := wrapString(path)
@@ -23575,10 +23307,10 @@ func SaveJsonToFile(js *JSON, path string) bool {
 }
 
 // GetJsonString Return the value of a string JSON key.
-func GetJsonString(js *JSON, key *string) (bool, *string) {
+func GetJsonString(js *JSON, key string) (bool, *string) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	value := new(string)
 	valueToC1 := C.CString(*value)
 	valueToC := &valueToC1
@@ -23588,10 +23320,10 @@ func GetJsonString(js *JSON, key *string) (bool, *string) {
 }
 
 // GetJsonBool Return the value of a boolean JSON key.
-func GetJsonBool(js *JSON, key *string) (bool, *bool) {
+func GetJsonBool(js *JSON, key string) (bool, *bool) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	value := new(bool)
 	valueToC := (*C.bool)(unsafe.Pointer(value))
 	retval := C.WrapGetJsonBool(jsToC, keyToC, valueToC)
@@ -23599,10 +23331,10 @@ func GetJsonBool(js *JSON, key *string) (bool, *bool) {
 }
 
 // GetJsonInt Return the value of an integer JSON key.
-func GetJsonInt(js *JSON, key *string) (bool, *int32) {
+func GetJsonInt(js *JSON, key string) (bool, *int32) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	value := new(int32)
 	valueToC := (*C.int32_t)(unsafe.Pointer(value))
 	retval := C.WrapGetJsonInt(jsToC, keyToC, valueToC)
@@ -23610,10 +23342,10 @@ func GetJsonInt(js *JSON, key *string) (bool, *int32) {
 }
 
 // GetJsonFloat Return the value of a float JSON key.
-func GetJsonFloat(js *JSON, key *string) (bool, *float32) {
+func GetJsonFloat(js *JSON, key string) (bool, *float32) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	value := new(float32)
 	valueToC := (*C.float)(unsafe.Pointer(value))
 	retval := C.WrapGetJsonFloat(jsToC, keyToC, valueToC)
@@ -23621,38 +23353,38 @@ func GetJsonFloat(js *JSON, key *string) (bool, *float32) {
 }
 
 // SetJsonValue Set a JSON key value.
-func SetJsonValue(js *JSON, key *string, value *string) {
+func SetJsonValue(js *JSON, key string, value string) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
-	valueToC1 := C.CString(*value)
-	valueToC := &valueToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
+	valueToC, idFinvalueToC := wrapString(value)
+	defer idFinvalueToC()
 	C.WrapSetJsonValue(jsToC, keyToC, valueToC)
 }
 
 // SetJsonValueWithValue Set a JSON key value.
-func SetJsonValueWithValue(js *JSON, key *string, value bool) {
+func SetJsonValueWithValue(js *JSON, key string, value bool) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	valueToC := C.bool(value)
 	C.WrapSetJsonValueWithValue(jsToC, keyToC, valueToC)
 }
 
 // SetJsonValueWithIntValue Set a JSON key value.
-func SetJsonValueWithIntValue(js *JSON, key *string, value int32) {
+func SetJsonValueWithIntValue(js *JSON, key string, value int32) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	valueToC := C.int32_t(value)
 	C.WrapSetJsonValueWithIntValue(jsToC, keyToC, valueToC)
 }
 
 // SetJsonValueWithFloatValue Set a JSON key value.
-func SetJsonValueWithFloatValue(js *JSON, key *string, value float32) {
+func SetJsonValueWithFloatValue(js *JSON, key string, value float32) {
 	jsToC := js.h
-	keyToC1 := C.CString(*key)
-	keyToC := &keyToC1
+	keyToC, idFinkeyToC := wrapString(key)
+	defer idFinkeyToC()
 	valueToC := C.float(value)
 	C.WrapSetJsonValueWithFloatValue(jsToC, keyToC, valueToC)
 }
@@ -24372,11 +24104,11 @@ func CreateObjectWithSliceOfMaterials(scene *Scene, mtx *Mat4, model *ModelRef, 
 }
 
 // CreateInstanceFromFile Helper function to create a [harfang.Node] with a [harfang.Transform] and an [harfang.Instance] component.  The instance component will be setup and its resources loaded from the local filesystem.  See [harfang.man.Assets].
-func CreateInstanceFromFile(scene *Scene, mtx *Mat4, name *string, resources *PipelineResources, pipeline *PipelineInfo) (*Node, *bool) {
+func CreateInstanceFromFile(scene *Scene, mtx *Mat4, name string, resources *PipelineResources, pipeline *PipelineInfo) (*Node, *bool) {
 	sceneToC := scene.h
 	mtxToC := mtx.h
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	resourcesToC := resources.h
 	pipelineToC := pipeline.h
 	success := new(bool)
@@ -24390,11 +24122,11 @@ func CreateInstanceFromFile(scene *Scene, mtx *Mat4, name *string, resources *Pi
 }
 
 // CreateInstanceFromFileWithFlags Helper function to create a [harfang.Node] with a [harfang.Transform] and an [harfang.Instance] component.  The instance component will be setup and its resources loaded from the local filesystem.  See [harfang.man.Assets].
-func CreateInstanceFromFileWithFlags(scene *Scene, mtx *Mat4, name *string, resources *PipelineResources, pipeline *PipelineInfo, flags LoadSaveSceneFlags) (*Node, *bool) {
+func CreateInstanceFromFileWithFlags(scene *Scene, mtx *Mat4, name string, resources *PipelineResources, pipeline *PipelineInfo, flags LoadSaveSceneFlags) (*Node, *bool) {
 	sceneToC := scene.h
 	mtxToC := mtx.h
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	resourcesToC := resources.h
 	pipelineToC := pipeline.h
 	success := new(bool)
@@ -24409,11 +24141,11 @@ func CreateInstanceFromFileWithFlags(scene *Scene, mtx *Mat4, name *string, reso
 }
 
 // CreateInstanceFromAssets Helper function to create a [harfang.Node] with a [harfang.Transform] and an [harfang.Instance] component.  The instance component will be setup and its resources loaded from the assets system.  See [harfang.man.Assets].
-func CreateInstanceFromAssets(scene *Scene, mtx *Mat4, name *string, resources *PipelineResources, pipeline *PipelineInfo) (*Node, *bool) {
+func CreateInstanceFromAssets(scene *Scene, mtx *Mat4, name string, resources *PipelineResources, pipeline *PipelineInfo) (*Node, *bool) {
 	sceneToC := scene.h
 	mtxToC := mtx.h
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	resourcesToC := resources.h
 	pipelineToC := pipeline.h
 	success := new(bool)
@@ -24427,11 +24159,11 @@ func CreateInstanceFromAssets(scene *Scene, mtx *Mat4, name *string, resources *
 }
 
 // CreateInstanceFromAssetsWithFlags Helper function to create a [harfang.Node] with a [harfang.Transform] and an [harfang.Instance] component.  The instance component will be setup and its resources loaded from the assets system.  See [harfang.man.Assets].
-func CreateInstanceFromAssetsWithFlags(scene *Scene, mtx *Mat4, name *string, resources *PipelineResources, pipeline *PipelineInfo, flags LoadSaveSceneFlags) (*Node, *bool) {
+func CreateInstanceFromAssetsWithFlags(scene *Scene, mtx *Mat4, name string, resources *PipelineResources, pipeline *PipelineInfo, flags LoadSaveSceneFlags) (*Node, *bool) {
 	sceneToC := scene.h
 	mtxToC := mtx.h
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	resourcesToC := resources.h
 	pipelineToC := pipeline.h
 	success := new(bool)
@@ -24457,10 +24189,10 @@ func CreateScript(scene *Scene) *Node {
 }
 
 // CreateScriptWithPath Helper function to create a [harfang.Node] with a [harfang.Script] component.
-func CreateScriptWithPath(scene *Scene, path *string) *Node {
+func CreateScriptWithPath(scene *Scene, path string) *Node {
 	sceneToC := scene.h
-	pathToC1 := C.CString(*path)
-	pathToC := &pathToC1
+	pathToC, idFinpathToC := wrapString(path)
+	defer idFinpathToC()
 	retval := C.WrapCreateScriptWithPath(sceneToC, pathToC)
 	retvalGO := &Node{h: retval}
 	runtime.SetFinalizer(retvalGO, func(cleanval *Node) {
@@ -25513,17 +25245,47 @@ func GetNodePairContacts(first *Node, second *Node, nodepaircontacts *NodePairCo
 }
 
 // SceneSyncToSystemsFromFile Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the local filesystem if required.  See [harfang.man.Assets].
-func SceneSyncToSystemsFromFile(scene *Scene, physics *SceneBullet3Physics) {
+func SceneSyncToSystemsFromFile(scene *Scene, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	vmToC := vm.h
+	C.WrapSceneSyncToSystemsFromFile(sceneToC, vmToC)
+}
+
+// SceneSyncToSystemsFromFileWithPhysics Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the local filesystem if required.  See [harfang.man.Assets].
+func SceneSyncToSystemsFromFileWithPhysics(scene *Scene, physics *SceneBullet3Physics) {
 	sceneToC := scene.h
 	physicsToC := physics.h
-	C.WrapSceneSyncToSystemsFromFile(sceneToC, physicsToC)
+	C.WrapSceneSyncToSystemsFromFileWithPhysics(sceneToC, physicsToC)
+}
+
+// SceneSyncToSystemsFromFileWithPhysicsVm Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the local filesystem if required.  See [harfang.man.Assets].
+func SceneSyncToSystemsFromFileWithPhysicsVm(scene *Scene, physics *SceneBullet3Physics, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	physicsToC := physics.h
+	vmToC := vm.h
+	C.WrapSceneSyncToSystemsFromFileWithPhysicsVm(sceneToC, physicsToC, vmToC)
 }
 
 // SceneSyncToSystemsFromAssets Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the assets system if required.  See [harfang.man.Assets].
-func SceneSyncToSystemsFromAssets(scene *Scene, physics *SceneBullet3Physics) {
+func SceneSyncToSystemsFromAssets(scene *Scene, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	vmToC := vm.h
+	C.WrapSceneSyncToSystemsFromAssets(sceneToC, vmToC)
+}
+
+// SceneSyncToSystemsFromAssetsWithPhysics Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the assets system if required.  See [harfang.man.Assets].
+func SceneSyncToSystemsFromAssetsWithPhysics(scene *Scene, physics *SceneBullet3Physics) {
 	sceneToC := scene.h
 	physicsToC := physics.h
-	C.WrapSceneSyncToSystemsFromAssets(sceneToC, physicsToC)
+	C.WrapSceneSyncToSystemsFromAssetsWithPhysics(sceneToC, physicsToC)
+}
+
+// SceneSyncToSystemsFromAssetsWithPhysicsVm Synchronize optional systems (eg. physics or script) states with the scene states. Load resources from the assets system if required.  See [harfang.man.Assets].
+func SceneSyncToSystemsFromAssetsWithPhysicsVm(scene *Scene, physics *SceneBullet3Physics, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	physicsToC := physics.h
+	vmToC := vm.h
+	C.WrapSceneSyncToSystemsFromAssetsWithPhysicsVm(sceneToC, physicsToC, vmToC)
 }
 
 // SceneUpdateSystems Update a scene and all its optional systems.
@@ -25532,6 +25294,15 @@ func SceneUpdateSystems(scene *Scene, clocks *SceneClocks, dt int64) {
 	clocksToC := clocks.h
 	dtToC := C.int64_t(dt)
 	C.WrapSceneUpdateSystems(sceneToC, clocksToC, dtToC)
+}
+
+// SceneUpdateSystemsWithVm Update a scene and all its optional systems.
+func SceneUpdateSystemsWithVm(scene *Scene, clocks *SceneClocks, dt int64, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	clocksToC := clocks.h
+	dtToC := C.int64_t(dt)
+	vmToC := vm.h
+	C.WrapSceneUpdateSystemsWithVm(sceneToC, clocksToC, dtToC, vmToC)
 }
 
 // SceneUpdateSystemsWithPhysicsStepMaxPhysicsStep Update a scene and all its optional systems.
@@ -25545,10 +25316,55 @@ func SceneUpdateSystemsWithPhysicsStepMaxPhysicsStep(scene *Scene, clocks *Scene
 	C.WrapSceneUpdateSystemsWithPhysicsStepMaxPhysicsStep(sceneToC, clocksToC, dtToC, physicsToC, stepToC, maxphysicsstepToC)
 }
 
+// SceneUpdateSystemsWithPhysicsStepMaxPhysicsStepVm Update a scene and all its optional systems.
+func SceneUpdateSystemsWithPhysicsStepMaxPhysicsStepVm(scene *Scene, clocks *SceneClocks, dt int64, physics *SceneBullet3Physics, step int64, maxphysicsstep int32, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	clocksToC := clocks.h
+	dtToC := C.int64_t(dt)
+	physicsToC := physics.h
+	stepToC := C.int64_t(step)
+	maxphysicsstepToC := C.int32_t(maxphysicsstep)
+	vmToC := vm.h
+	C.WrapSceneUpdateSystemsWithPhysicsStepMaxPhysicsStepVm(sceneToC, clocksToC, dtToC, physicsToC, stepToC, maxphysicsstepToC, vmToC)
+}
+
+// SceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStep Update a scene and all its optional systems.
+func SceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStep(scene *Scene, clocks *SceneClocks, dt int64, physics *SceneBullet3Physics, contacts *NodePairContacts, step int64, maxphysicsstep int32) {
+	sceneToC := scene.h
+	clocksToC := clocks.h
+	dtToC := C.int64_t(dt)
+	physicsToC := physics.h
+	contactsToC := contacts.h
+	stepToC := C.int64_t(step)
+	maxphysicsstepToC := C.int32_t(maxphysicsstep)
+	C.WrapSceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStep(sceneToC, clocksToC, dtToC, physicsToC, contactsToC, stepToC, maxphysicsstepToC)
+}
+
+// SceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStepVm Update a scene and all its optional systems.
+func SceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStepVm(scene *Scene, clocks *SceneClocks, dt int64, physics *SceneBullet3Physics, contacts *NodePairContacts, step int64, maxphysicsstep int32, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	clocksToC := clocks.h
+	dtToC := C.int64_t(dt)
+	physicsToC := physics.h
+	contactsToC := contacts.h
+	stepToC := C.int64_t(step)
+	maxphysicsstepToC := C.int32_t(maxphysicsstep)
+	vmToC := vm.h
+	C.WrapSceneUpdateSystemsWithPhysicsContactsStepMaxPhysicsStepVm(sceneToC, clocksToC, dtToC, physicsToC, contactsToC, stepToC, maxphysicsstepToC, vmToC)
+}
+
 // SceneGarbageCollectSystems Garbage collect a scene and all its optional systems.
 func SceneGarbageCollectSystems(scene *Scene) int32 {
 	sceneToC := scene.h
 	retval := C.WrapSceneGarbageCollectSystems(sceneToC)
+	return int32(retval)
+}
+
+// SceneGarbageCollectSystemsWithVm Garbage collect a scene and all its optional systems.
+func SceneGarbageCollectSystemsWithVm(scene *Scene, vm *SceneLuaVM) int32 {
+	sceneToC := scene.h
+	vmToC := vm.h
+	retval := C.WrapSceneGarbageCollectSystemsWithVm(sceneToC, vmToC)
 	return int32(retval)
 }
 
@@ -25560,10 +25376,26 @@ func SceneGarbageCollectSystemsWithPhysics(scene *Scene, physics *SceneBullet3Ph
 	return int32(retval)
 }
 
+// SceneGarbageCollectSystemsWithPhysicsVm Garbage collect a scene and all its optional systems.
+func SceneGarbageCollectSystemsWithPhysicsVm(scene *Scene, physics *SceneBullet3Physics, vm *SceneLuaVM) int32 {
+	sceneToC := scene.h
+	physicsToC := physics.h
+	vmToC := vm.h
+	retval := C.WrapSceneGarbageCollectSystemsWithPhysicsVm(sceneToC, physicsToC, vmToC)
+	return int32(retval)
+}
+
 // SceneClearSystems Clear scene and all optional systems.
 func SceneClearSystems(scene *Scene) {
 	sceneToC := scene.h
 	C.WrapSceneClearSystems(sceneToC)
+}
+
+// SceneClearSystemsWithVm Clear scene and all optional systems.
+func SceneClearSystemsWithVm(scene *Scene, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	vmToC := vm.h
+	C.WrapSceneClearSystemsWithVm(sceneToC, vmToC)
 }
 
 // SceneClearSystemsWithPhysics Clear scene and all optional systems.
@@ -25571,6 +25403,14 @@ func SceneClearSystemsWithPhysics(scene *Scene, physics *SceneBullet3Physics) {
 	sceneToC := scene.h
 	physicsToC := physics.h
 	C.WrapSceneClearSystemsWithPhysics(sceneToC, physicsToC)
+}
+
+// SceneClearSystemsWithPhysicsVm Clear scene and all optional systems.
+func SceneClearSystemsWithPhysicsVm(scene *Scene, physics *SceneBullet3Physics, vm *SceneLuaVM) {
+	sceneToC := scene.h
+	physicsToC := physics.h
+	vmToC := vm.h
+	C.WrapSceneClearSystemsWithPhysicsVm(sceneToC, physicsToC, vmToC)
 }
 
 // InputInit Initialize the Input system. Must be invoked before any call to [harfang.WindowSystemInit] to work properly.  ```python hg.InputInit() hg.WindowSystemInit() ```
@@ -26015,6 +25855,17 @@ func ImGuiSetNextWindowPosWithCondition(pos *Vec2, condition ImGuiCond) {
 	C.WrapImGuiSetNextWindowPosWithCondition(posToC, conditionToC)
 }
 
+// ImGuiSetNextWindowPosCenter Set next window position to be centered on screen, call before [harfang.ImGuiBegin].
+func ImGuiSetNextWindowPosCenter() {
+	C.WrapImGuiSetNextWindowPosCenter()
+}
+
+// ImGuiSetNextWindowPosCenterWithCondition Set next window position to be centered on screen, call before [harfang.ImGuiBegin].
+func ImGuiSetNextWindowPosCenterWithCondition(condition ImGuiCond) {
+	conditionToC := C.int32_t(condition)
+	C.WrapImGuiSetNextWindowPosCenterWithCondition(conditionToC)
+}
+
 // ImGuiSetNextWindowSize Set next window size, call before [harfang.ImGuiBegin]. A value of 0 for an axis will auto-fit it.
 func ImGuiSetNextWindowSize(size *Vec2) {
 	sizeToC := size.h
@@ -26039,6 +25890,12 @@ func ImGuiSetNextWindowSizeConstraints(sizemin *Vec2, sizemax *Vec2) {
 func ImGuiSetNextWindowContentSize(size *Vec2) {
 	sizeToC := size.h
 	C.WrapImGuiSetNextWindowContentSize(sizeToC)
+}
+
+// ImGuiSetNextWindowContentWidth See [harfang.ImGuiSetNextWindowContentSize].
+func ImGuiSetNextWindowContentWidth(width float32) {
+	widthToC := C.float(width)
+	C.WrapImGuiSetNextWindowContentWidth(widthToC)
 }
 
 // ImGuiSetNextWindowCollapsed Set next window collapsed state, call before [harfang.ImGuiBegin].
@@ -28275,8 +28132,8 @@ func ImGuiWantCaptureMouse() bool {
 }
 
 // ImGuiMouseDrawCursor Enable/disable the ImGui software mouse cursor.
-func ImGuiMouseDrawCursor(drawcursor *bool) {
-	drawcursorToC := (*C.bool)(unsafe.Pointer(drawcursor))
+func ImGuiMouseDrawCursor(drawcursor bool) {
+	drawcursorToC := C.bool(drawcursor)
 	C.WrapImGuiMouseDrawCursor(drawcursorToC)
 }
 
@@ -28307,12 +28164,6 @@ func ImGuiInitContext(fontsize float32, imguiprogram *ProgramHandle, imguiimagep
 // ImGuiShutdown Shutdown the global ImGui context.
 func ImGuiShutdown() {
 	C.WrapImGuiShutdown()
-}
-
-// ImGuiShutdownWithCtx Shutdown the global ImGui context.
-func ImGuiShutdownWithCtx(ctx *DearImguiContext) {
-	ctxToC := ctx.h
-	C.WrapImGuiShutdownWithCtx(ctxToC)
 }
 
 // ImGuiBeginFrame Begin an ImGui frame. This function must be called once per frame before any other ImGui call.  When using multiple contexts, it must be called for each context you intend to use during the current frame.  See [harfang.ImGuiEndFrame].
@@ -28366,9 +28217,9 @@ func ImGuiClearInputBuffer() {
 }
 
 // OpenFolderDialog Open a native OpenFolder dialog.
-func OpenFolderDialog(title *string, foldername *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func OpenFolderDialog(title string, foldername *string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	foldernameToC1 := C.CString(*foldername)
 	foldernameToC := &foldernameToC1
 	retval := C.WrapOpenFolderDialog(titleToC, foldernameToC)
@@ -28376,21 +28227,21 @@ func OpenFolderDialog(title *string, foldername *string) bool {
 }
 
 // OpenFolderDialogWithInitialDir Open a native OpenFolder dialog.
-func OpenFolderDialogWithInitialDir(title *string, foldername *string, initialdir *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func OpenFolderDialogWithInitialDir(title string, foldername *string, initialdir string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	foldernameToC1 := C.CString(*foldername)
 	foldernameToC := &foldernameToC1
-	initialdirToC1 := C.CString(*initialdir)
-	initialdirToC := &initialdirToC1
+	initialdirToC, idFininitialdirToC := wrapString(initialdir)
+	defer idFininitialdirToC()
 	retval := C.WrapOpenFolderDialogWithInitialDir(titleToC, foldernameToC, initialdirToC)
 	return bool(retval)
 }
 
 // OpenFileDialog Open a native OpenFile dialog.
-func OpenFileDialog(title *string, filters *FileFilterList, file *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func OpenFileDialog(title string, filters *FileFilterList, file *string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	filtersToC := filters.h
 	fileToC1 := C.CString(*file)
 	fileToC := &fileToC1
@@ -28399,22 +28250,22 @@ func OpenFileDialog(title *string, filters *FileFilterList, file *string) bool {
 }
 
 // OpenFileDialogWithInitialDir Open a native OpenFile dialog.
-func OpenFileDialogWithInitialDir(title *string, filters *FileFilterList, file *string, initialdir *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func OpenFileDialogWithInitialDir(title string, filters *FileFilterList, file *string, initialdir string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	filtersToC := filters.h
 	fileToC1 := C.CString(*file)
 	fileToC := &fileToC1
-	initialdirToC1 := C.CString(*initialdir)
-	initialdirToC := &initialdirToC1
+	initialdirToC, idFininitialdirToC := wrapString(initialdir)
+	defer idFininitialdirToC()
 	retval := C.WrapOpenFileDialogWithInitialDir(titleToC, filtersToC, fileToC, initialdirToC)
 	return bool(retval)
 }
 
 // SaveFileDialog Open a native SaveFile dialog.
-func SaveFileDialog(title *string, filters *FileFilterList, file *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func SaveFileDialog(title string, filters *FileFilterList, file *string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	filtersToC := filters.h
 	fileToC1 := C.CString(*file)
 	fileToC := &fileToC1
@@ -28423,14 +28274,14 @@ func SaveFileDialog(title *string, filters *FileFilterList, file *string) bool {
 }
 
 // SaveFileDialogWithInitialDir Open a native SaveFile dialog.
-func SaveFileDialogWithInitialDir(title *string, filters *FileFilterList, file *string, initialdir *string) bool {
-	titleToC1 := C.CString(*title)
-	titleToC := &titleToC1
+func SaveFileDialogWithInitialDir(title string, filters *FileFilterList, file *string, initialdir string) bool {
+	titleToC, idFintitleToC := wrapString(title)
+	defer idFintitleToC()
 	filtersToC := filters.h
 	fileToC1 := C.CString(*file)
 	fileToC := &fileToC1
-	initialdirToC1 := C.CString(*initialdir)
-	initialdirToC := &initialdirToC1
+	initialdirToC, idFininitialdirToC := wrapString(initialdir)
+	defer idFininitialdirToC()
 	retval := C.WrapSaveFileDialogWithInitialDir(titleToC, filtersToC, fileToC, initialdirToC)
 	return bool(retval)
 }
@@ -28793,6 +28644,38 @@ func OpenVRGetFrameBufferSize() *IVec2 {
 	return retvalGO
 }
 
+// SRanipalInit Initial the SRanipal eye detection SDK.
+func SRanipalInit() bool {
+	retval := C.WrapSRanipalInit()
+	return bool(retval)
+}
+
+// SRanipalShutdown Shutdown the SRanipal eye detection SDK.
+func SRanipalShutdown() {
+	C.WrapSRanipalShutdown()
+}
+
+// SRanipalLaunchEyeCalibration Launch the eye detection calibration sequence.
+func SRanipalLaunchEyeCalibration() {
+	C.WrapSRanipalLaunchEyeCalibration()
+}
+
+// SRanipalIsViveProEye Return `true` if the eye detection device in use is Vive Pro Eye.
+func SRanipalIsViveProEye() bool {
+	retval := C.WrapSRanipalIsViveProEye()
+	return bool(retval)
+}
+
+// SRanipalGetState Return the current SRanipal device state.
+func SRanipalGetState() *SRanipalState {
+	retval := C.WrapSRanipalGetState()
+	retvalGO := &SRanipalState{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *SRanipalState) {
+		C.WrapSRanipalStateFree(cleanval.h)
+	})
+	return retvalGO
+}
+
 // MakeVertex ...
 func MakeVertex(pos *Vec3) *Vertex {
 	posToC := pos.h
@@ -29068,19 +28951,19 @@ func ComputeSAO(viewid *uint16, rect *IntRect, attr0 *Texture, attr1 *Texture, n
 }
 
 // BeginProfilerSection Begin a named profiler section. Call [harfang.EndProfilerSection] to end the section.
-func BeginProfilerSection(name *string) int32 {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
+func BeginProfilerSection(name string) int32 {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
 	retval := C.WrapBeginProfilerSection(nameToC)
 	return int32(retval)
 }
 
 // BeginProfilerSectionWithSectionDetails Begin a named profiler section. Call [harfang.EndProfilerSection] to end the section.
-func BeginProfilerSectionWithSectionDetails(name *string, sectiondetails *string) int32 {
-	nameToC1 := C.CString(*name)
-	nameToC := &nameToC1
-	sectiondetailsToC1 := C.CString(*sectiondetails)
-	sectiondetailsToC := &sectiondetailsToC1
+func BeginProfilerSectionWithSectionDetails(name string, sectiondetails string) int32 {
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
+	sectiondetailsToC, idFinsectiondetailsToC := wrapString(sectiondetails)
+	defer idFinsectiondetailsToC()
 	retval := C.WrapBeginProfilerSectionWithSectionDetails(nameToC, sectiondetailsToC)
 	return int32(retval)
 }
