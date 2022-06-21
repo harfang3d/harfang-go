@@ -1,5 +1,7 @@
+
 ![image](https://raw.githubusercontent.com/harfang3d/image-storage/main/brand/logo_harfang3d_horizontal-512px.png)
 
+[![harfang-go release (latest SemVer)](https://img.shields.io/github/v/release/harfang3d/harfang-go)](https://github.com/harfang3d/harfang-go/releases)
 [![Go Doc](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/harfang3d/harfang-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/harfang3d/harfang-go)](https://goreportcard.com/report/github.com/harfang3d/harfang-go)
 # Harfang for GO
@@ -12,6 +14,12 @@ create applications ranging from data visualization to games.
 
 See <https://www.harfang3d.com/license> for licensing terms.
 
+
+## Installation ##
+
+```bash
+go get github.com/harfang3d/harfang-go/v3
+```
 
  **Quickstart**
 
