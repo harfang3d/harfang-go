@@ -1435,6 +1435,7 @@ extern size_t WrapGetScriptCountSceneLuaVM(WrapSceneLuaVM this_);
 extern WrapLuaObject WrapGetScriptEnvSceneLuaVM(WrapSceneLuaVM this_, const WrapScript script);
 extern WrapLuaObject WrapGetScriptValueSceneLuaVM(WrapSceneLuaVM this_, const WrapScript script, const char *name);
 extern bool WrapSetScriptValueSceneLuaVM(WrapSceneLuaVM this_, const WrapScript script, const char *name, const WrapLuaObject value);
+extern bool WrapSetScriptValueSceneLuaVMWithNotify(WrapSceneLuaVM this_, const WrapScript script, const char *name, const WrapLuaObject value, bool notify);
 extern bool WrapCallSceneLuaVM(WrapSceneLuaVM this_, const WrapScript script, const char *function, const WrapLuaObjectList args, WrapLuaObjectList ret_vals);
 extern bool WrapCallSceneLuaVMWithSliceOfArgs(WrapSceneLuaVM this_, const WrapScript script, const char *function, size_t SliceOfargsToCSize,
 	WrapLuaObject *SliceOfargsToCBuf, WrapLuaObjectList ret_vals);

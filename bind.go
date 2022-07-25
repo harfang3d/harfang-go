@@ -10800,6 +10800,17 @@ func (pointer *SceneLuaVM) SetScriptValue(script *Script, name string, value *Lu
 	return bool(retval)
 }
 
+// SetScriptValueWithNotify ...
+func (pointer *SceneLuaVM) SetScriptValueWithNotify(script *Script, name string, value *LuaObject, notify bool) bool {
+	scriptToC := script.h
+	nameToC, idFinnameToC := wrapString(name)
+	defer idFinnameToC()
+	valueToC := value.h
+	notifyToC := C.bool(notify)
+	retval := C.WrapSetScriptValueSceneLuaVMWithNotify(pointer.h, scriptToC, nameToC, valueToC, notifyToC)
+	return bool(retval)
+}
+
 // Call ...
 func (pointer *SceneLuaVM) Call(script *Script, function string, args *LuaObjectList) (bool, *LuaObjectList) {
 	scriptToC := script.h
