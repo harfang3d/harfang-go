@@ -10247,6 +10247,16 @@ type NodePairContacts struct {
 	h C.WrapNodePairContacts
 }
 
+// NewNodePairContacts ...
+func NewNodePairContacts() *NodePairContacts {
+	retval := C.WrapConstructorNodePairContacts()
+	retvalGO := &NodePairContacts{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *NodePairContacts) {
+		C.WrapNodePairContactsFree(cleanval.h)
+	})
+	return retvalGO
+}
+
 // Free ...
 func (pointer *NodePairContacts) Free() {
 	C.WrapNodePairContactsFree(pointer.h)
@@ -10371,10 +10381,12 @@ func (pointer *SceneBullet3Physics) StepSimulationWithStepDtMaxStep(displaydt in
 }
 
 // CollectCollisionEvents ...
-func (pointer *SceneBullet3Physics) CollectCollisionEvents(scene *Scene, nodepaircontacts *NodePairContacts) {
+func (pointer *SceneBullet3Physics) CollectCollisionEvents(scene *Scene) *NodePairContacts {
 	sceneToC := scene.h
+	nodepaircontacts := NewNodePairContacts()
 	nodepaircontactsToC := nodepaircontacts.h
 	C.WrapCollectCollisionEventsSceneBullet3Physics(pointer.h, sceneToC, nodepaircontactsToC)
+	return nodepaircontacts
 }
 
 // SyncTransformsFromScene ...
@@ -12401,6 +12413,16 @@ func (pointer *FileFilter) SetPattern(v string) {
 	vToC, idFinvToC := wrapString(v)
 	defer idFinvToC()
 	C.WrapFileFilterSetPattern(pointer.h, vToC)
+}
+
+// NewFileFilter ...
+func NewFileFilter() *FileFilter {
+	retval := C.WrapConstructorFileFilter()
+	retvalGO := &FileFilter{h: retval}
+	runtime.SetFinalizer(retvalGO, func(cleanval *FileFilter) {
+		C.WrapFileFilterFree(cleanval.h)
+	})
+	return retvalGO
 }
 
 // Free ...
