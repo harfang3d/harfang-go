@@ -13,7 +13,7 @@ create applications ranging from data visualization to games.
 
 See <https://www.harfang3d.com/license> for licensing terms.  
 
-## Installation steps for Windows ##
+## Installation steps for Windows
 
   1. Install the [GO Language](https://go.dev/dl/) for Windows
   2. Install [MSYS 2](https://go.dev/dl/)
@@ -37,7 +37,7 @@ go get github.com/harfang3d/harfang-go/v3
 go run example_harfang_app.go
 ```
 
-**Quickstart**
+## Test the Go tutorials
 
 1. Download the tutorials <https://github.com/harfang3d/tutorials-hg2>
 
