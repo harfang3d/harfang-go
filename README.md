@@ -43,21 +43,15 @@ go run example_harfang_app.go
 
 and unzip them to your computer (eg. *d:/tutorials-hg2*).
 
-2. To compile the tutorial resources, download **assetc** for your
-
-platform: <https://dev.harfang3d.com/releases/>
+2. To compile the tutorial resources, download **assetc** for your platform: <https://dev.harfang3d.com/releases/>
 
 3. Drag and drop the tutorial resources folder on the **\`assetc**
 
-executable -OR- execute **assetc** passing it the path to the
-
-tutorial resources folder (eg. *assetc d:/tutorials-hg2/resources*).
+executable -OR- execute **assetc** passing it the path to the tutorial resources folder (eg. *assetc d:/tutorials-hg2/resources*).
 
 ![image](https://raw.githubusercontent.com/harfang3d/image-storage/main/tutorials/assetc.gif)
 
-After the compilation process finishes, you should see a
-
-`resources_compiled` folder next to the resources folder. You can now
+After the compilation process finishes, you should see a `resources_compiled` folder next to the resources folder. You can now
 
 execute the tutorials from the folder you unzipped them to.
 
@@ -65,8 +59,7 @@ execute the tutorials from the folder you unzipped them to.
 tutorials-hg2>go run draw_lines.go
 ```
 
-Alternatively you can open the tutorial folder and run the provided
-debug targets using [Visual Studio Code](https://code.visualstudio.com/)
+Alternatively you can open the tutorial folder and run the provided debug targets using [Visual Studio Code](https://code.visualstudio.com/)
 
 **Screenshots**
 
