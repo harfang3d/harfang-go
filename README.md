@@ -1,9 +1,10 @@
-![image](https://raw.githubusercontent.com/harfang3d/image-storage/main/brand/logo_harfang3d_horizontal-512px.png)
+<img src="https://github.com/harfang3d/image-storage/raw/main/brand/logo_harfang3d_owl_only.png" align="right" width="200"/>
+
+# Harfang for Golang
+
 [![harfang-go release (latest SemVer)](https://img.shields.io/github/v/release/harfang3d/harfang-go)](https://github.com/harfang3d/harfang-go/releases)
 [![Go Doc](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/harfang3d/harfang-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/harfang3d/harfang-go)](https://goreportcard.com/report/github.com/harfang3d/harfang-go)
-
-# Harfang for GO
 
 **3D real time visualization framework**
 
