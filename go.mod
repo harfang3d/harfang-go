@@ -1,3 +1,3 @@
-module github.com/harfang3d/harfang-go/v3
+module harfang
 
-go 1.18
+go 1.15
