@@ -1,6 +1,6 @@
 <img src="https://github.com/harfang3d/image-storage/raw/main/brand/logo_harfang3d_owl_only.png" align="right" width="200"/>
 
-# Harfang for Golang
+# HARFANG® for Golang
 
 [![harfang-go release (latest SemVer)](https://img.shields.io/github/v/release/harfang3d/harfang-go)](https://github.com/harfang3d/harfang-go/releases)
 [![Go Doc](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/harfang3d/harfang-go)
